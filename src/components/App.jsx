@@ -22,13 +22,9 @@ export function App() {
       return;
     }
     setSearchName(value);
-    // setImages([])
-    // this.setState({
-    //   searchName: value,
-    //   page: 1,
-    //   images: [],
-    //   error: null,
-    // });
+    setPage(1);
+    setImages([]);
+    setError(null);
   };
 
   const handleClick = e => {
@@ -52,6 +48,7 @@ export function App() {
     if (searchName === '') {
       return;
     }
+    // setStatus('pending');
     fetch(
       `${URL}?q=${searchName}&page=${page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`
     )
@@ -59,14 +56,14 @@ export function App() {
         if (response.ok) {
           return response.json();
         }
-
         throw new Error('There are no images on your request');
       })
 
       .then(data => {
-        console.log(data);
-        setImages([...images, ...data.hits]);
-        setBtnloadMore(data.Total < Math.ceil(data.totalHits / 12));
+        //  setImages([...images,...data.hits]);
+
+        setImages([...data.hits]);
+        setBtnloadMore(page < Math.ceil(data.totalHits / 12));
         setStatus('resolved');
       })
       .catch(({ message: error }) => {
